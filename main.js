@@ -1,11 +1,38 @@
 import puppeteer from "puppeteer"
 const browser = await puppeteer.launch({
+  // args: ["--screen-info={1600x1200}"],
   headless: false,
+  // defaultViewport: {
+  //   width: 1920,
+  //   height: 1080,
+  // },
+  defaultViewport: null,
+  // headless: false,
+  // defaultViewport: null,
+  // args: ["--window-size=1920,1080"],
+  args: ["--start-maximized"],
+  sloMo: 250,
+
+  // devtools: true,
   //   ignoreHTTPSErrors: true,
   //   args: ["--ignore-certificate-errors"],
 })
 
 const page = await browser.newPage()
+// await page.setViewport({
+//   width: 1366,
+//   height: 768,
+// })
+// await page.setRequestInterception(true)
+// page.on("request", (interceptedRequest) => {
+//   if (interceptedRequest.isInterceptResolutionHandled()) return
+//   if (
+//     interceptedRequest.url().endsWith(".png") ||
+//     interceptedRequest.url().endsWith(".jpg")
+//   )
+//     interceptedRequest.abort()
+//   else interceptedRequest.continue()
+// })
 
 // page.on("request", (request) => {
 //   console.log("req")
@@ -16,7 +43,24 @@ const page = await browser.newPage()
 //   console.log("res")
 //   console.log(response.url())
 // })
-await page.goto("https://student.bmsit.ac.in/parents/index.php")
+browser.setCookie({
+  name: "5bd4aa82278a9392700cda732bf3f9eb",
+  value: "91378bff9cfc8ee165f0c4e40d0302aa",
+  domain: "student.bmsit.ac.in",
+  path: "/",
+  expires: -1,
+  size: 64,
+  httpOnly: false,
+  secure: false,
+  session: true,
+  priority: "Medium",
+  sameParty: false,
+  sourceScheme: "Secure",
+  sourcePort: 443,
+  partitionKey: undefined,
+})
+// console.log(await browser.cookies())
+await page.goto("https://student.bmsit.ac.in/parentsodd/index.php")
 // await page.goto("https://www.youtube.com")
 
 const login = async (usn, dd, mm, yyyy, id) => {
@@ -35,15 +79,38 @@ const login = async (usn, dd, mm, yyyy, id) => {
 await login("1BY25CS213", "28", "04", "2007", "19964")
 
 await page.waitForSelector(".cn-btm-border")
-// const result = await page.$eval(".cn-stu-data1", (el) => el.textContent)
-// console.log(result)
+debugger
+const result = await page.$eval(".cn-stu-data1", (el) => el.textContent)
+page.on("console", (msg) => console.log(msg.text()))
+await page.evaluate(() => {
+  // console.log("hii"),
+})
 
-const el = await page.locator(".cn-stu-data1").waitHandle().textContent
-console.log(el)
 // screenshot of dashboard
 await page.screenshot({
   path: "screenshot1.jpg",
 })
-// console.log("hii")
+
+await page.pdf({
+  path: "testingpdf.pdf",
+})
+
 // await page.title().then((title) => console.log(title))
+browser.deleteCookie({
+  name: "5bd4aa82278a9392700cda732bf3f9eb",
+  value: "91378bff9cfc8ee165f0c4e40d0302aa",
+  domain: "student.bmsit.ac.in",
+  path: "/",
+  expires: -1,
+  size: 64,
+  httpOnly: false,
+  secure: false,
+  session: true,
+  priority: "Medium",
+  sameParty: false,
+  sourceScheme: "Secure",
+  sourcePort: 443,
+  partitionKey: undefined,
+})
+// console.log(await browser.cookies())
 // await browser.close()
